@@ -47,6 +47,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 	static SerialPort serialPort;
 	private static net.Network network;
 
+	
 	/**
 	 * Launch the application.
 	 * @param args
@@ -88,8 +89,45 @@ public class DrawbotControlApplication implements net.Network_iface {
 		Menu menu = new Menu(shell, SWT.BAR);
 		shell.setMenuBar(menu);
 		
-		MenuItem mntmFile = new MenuItem(menu, SWT.NONE);
-		mntmFile.setText("File");
+		MenuItem mntmFile = new MenuItem(menu, SWT.CASCADE);
+		mntmFile.setText("F&ile");
+		
+		Menu menu_1 = new Menu(mntmFile);
+		mntmFile.setMenu(menu_1);
+		
+		MenuItem mntmTools = new MenuItem(menu, SWT.CASCADE);
+		mntmTools.setText("T&ools");
+		
+		Menu menu_2 = new Menu(mntmTools);
+		mntmTools.setMenu(menu_2);
+		
+		MenuItem mntmPort = new MenuItem(menu_2, SWT.CASCADE);
+		mntmPort.setText("Port");
+		
+		Menu menu_3 = new Menu(mntmPort);
+		mntmPort.setMenu(menu_3);
+		
+		MenuItem mntmBaudRate = new MenuItem(menu_2, SWT.CASCADE);
+		mntmBaudRate.setText("Baud Rate");
+		
+		Menu menu_4 = new Menu(mntmBaudRate);
+		mntmBaudRate.setMenu(menu_4);
+		
+		MenuItem baud9600 = new MenuItem(menu_4, SWT.CHECK);
+		baud9600.setSelection(true);
+		baud9600.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				portBaudRate = "9600";
+			}
+		});
+		baud9600.setText("9600");
+		
+		MenuItem baud38400 = new MenuItem(menu_4, SWT.CHECK);
+		baud38400.setText("38400");
+		
+		MenuItem baud115200 = new MenuItem(menu_4, SWT.CHECK);
+		baud115200.setText("115200");
 		
 		Canvas canvas = new Canvas(shell, SWT.NONE);
 		canvas.setBackground(SWTResourceManager.getColor(SWT.COLOR_DARK_GRAY));
@@ -99,7 +137,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		grpSerialPortSelect.setForeground(SWTResourceManager.getColor(SWT.COLOR_TITLE_BACKGROUND));
 		grpSerialPortSelect.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		grpSerialPortSelect.setText("Serial Port Select");
-		grpSerialPortSelect.setBounds(10, 10, 348, 110);
+		grpSerialPortSelect.setBounds(10, 10, 348, 77);
 		
 		final Combo comboPorts = new Combo(grpSerialPortSelect, SWT.NONE);
 		comboPorts.addSelectionListener(new SelectionAdapter() {
@@ -108,26 +146,11 @@ public class DrawbotControlApplication implements net.Network_iface {
 				portName = comboPorts.getText(); //set variable to selected port name.
 			}
 		});
-		comboPorts.setBounds(86, 24, 248, 22);
-		
-		final Combo comboBaudRate = new Combo(grpSerialPortSelect, SWT.NONE);
-		comboBaudRate.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				portBaudRate = comboBaudRate.getText(); //set variable to selected baud rate
-			}
-		});
-		comboBaudRate.setItems(new String[] {"9600", "38400", "115200"});
-		comboBaudRate.setBounds(86, 52, 89, 22);
-		comboBaudRate.select(0);
-		
-		Label lblBaudRate = new Label(grpSerialPortSelect, SWT.NONE);
-		lblBaudRate.setBounds(10, 56, 70, 14);
-		lblBaudRate.setText("Baud Rate:");
+		comboPorts.setBounds(84, 18, 248, 22);
 		
 		Label lblPort = new Label(grpSerialPortSelect, SWT.NONE);
 		lblPort.setText("Port:");
-		lblPort.setBounds(10, 28, 59, 14);
+		lblPort.setBounds(8, 22, 59, 14);
 		
 		Group grpImageFileSettings = new Group(shell, SWT.NONE);
 		grpImageFileSettings.setForeground(SWTResourceManager.getColor(SWT.COLOR_TITLE_BACKGROUND));
@@ -155,7 +178,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		grpTrimStepper.setForeground(SWTResourceManager.getColor(SWT.COLOR_TITLE_BACKGROUND));
 		grpTrimStepper.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		grpTrimStepper.setText("Trim");
-		grpTrimStepper.setBounds(10, 242, 293, 231);
+		grpTrimStepper.setBounds(10, 242, 293, 245);
 		
 		Label label = new Label(grpTrimStepper, SWT.SEPARATOR | SWT.HORIZONTAL);
 		label.setBounds(8, 120, 275, 2);
@@ -203,21 +226,45 @@ public class DrawbotControlApplication implements net.Network_iface {
 		label_2.setText("Right Stepper");
 		label_2.setAlignment(SWT.CENTER);
 		
-		Button btnNewButton_4 = new Button(grpTrimStepper, SWT.NONE);
-		btnNewButton_4.setBounds(70, 144, 94, 28);
-		btnNewButton_4.setText("UP");
+		Button btnLeftUpCoarse = new Button(grpTrimStepper, SWT.NONE);
+		btnLeftUpCoarse.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				sendCommand("q");
+			}
+		});
+		btnLeftUpCoarse.setBounds(70, 144, 94, 28);
+		btnLeftUpCoarse.setText("UP");
 		
-		Button btnNewButton_5 = new Button(grpTrimStepper, SWT.NONE);
-		btnNewButton_5.setBounds(170, 144, 94, 28);
-		btnNewButton_5.setText("DOWN");
+		Button btnLeftDownCoarse = new Button(grpTrimStepper, SWT.NONE);
+		btnLeftDownCoarse.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				sendCommand("w");
+			}
+		});
+		btnLeftDownCoarse.setBounds(170, 144, 94, 28);
+		btnLeftDownCoarse.setText("DOWN");
 		
-		Button btnNewButton_6 = new Button(grpTrimStepper, SWT.NONE);
-		btnNewButton_6.setBounds(70, 175, 94, 28);
-		btnNewButton_6.setText("UP");
+		Button btnRightUpCoarse = new Button(grpTrimStepper, SWT.NONE);
+		btnRightUpCoarse.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				sendCommand("e");
+			}
+		});
+		btnRightUpCoarse.setBounds(70, 175, 94, 28);
+		btnRightUpCoarse.setText("UP");
 		
-		Button btnNewButton_7 = new Button(grpTrimStepper, SWT.NONE);
-		btnNewButton_7.setBounds(170, 175, 94, 28);
-		btnNewButton_7.setText("DOWN");
+		Button btnRightDownCoarse = new Button(grpTrimStepper, SWT.NONE);
+		btnRightDownCoarse.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				sendCommand("r");
+			}
+		});
+		btnRightDownCoarse.setBounds(170, 175, 94, 28);
+		btnRightDownCoarse.setText("DOWN");
 		
 		Button btnRightUpFine = new Button(grpTrimStepper, SWT.NONE);
 		btnRightUpFine.addSelectionListener(new SelectionAdapter() {
@@ -248,7 +295,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		grpCaddyControl.setForeground(SWTResourceManager.getColor(SWT.COLOR_TITLE_BACKGROUND));
 		grpCaddyControl.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		grpCaddyControl.setText("Caddy Control");
-		grpCaddyControl.setBounds(309, 242, 293, 231);
+		grpCaddyControl.setBounds(309, 242, 293, 245);
 		
 		final Label lblSpeed = new Label(grpCaddyControl, SWT.NONE);
 		lblSpeed.setBounds(184, 164, 33, 19);
@@ -267,30 +314,62 @@ public class DrawbotControlApplication implements net.Network_iface {
 		scale.setMinimum(1);
 		scale.setSelection(64);
 		
-		Button btnSet = new Button(grpCaddyControl, SWT.NONE);
-		btnSet.setBounds(216, 158, 61, 28);
-		btnSet.setText("Set");
+		Button btnCaddySet = new Button(grpCaddyControl, SWT.NONE);
+		btnCaddySet.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				String scaleAmount = String.valueOf((char)scale.getSelection());
+				sendCommand("]" + scaleAmount);
+				System.out.println(scaleAmount);
+			}
+		});
+		btnCaddySet.setBounds(216, 158, 61, 28);
+		btnCaddySet.setText("Set");
 		
 		Label lblCaddySpeed = new Label(grpCaddyControl, SWT.NONE);
 		lblCaddySpeed.setBounds(59, 122, 78, 14);
 		lblCaddySpeed.setText("Caddy Speed");
 		
 		Button btnUp = new Button(grpCaddyControl, SWT.NONE);
+		btnUp.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				sendCommand("g");
+			}
+		});
 		btnUp.setBounds(113, 32, 61, 28);
 		btnUp.setText("UP");
 		
 		Button btnDown = new Button(grpCaddyControl, SWT.NONE);
+		btnDown.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				sendCommand("h");
+			}
+		});
 		btnDown.setBounds(113, 82, 61, 28);
 		btnDown.setText("DOWN");
 		
 		Button btnLeft = new Button(grpCaddyControl, SWT.NONE);
+		btnLeft.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				sendCommand("j");
+			}
+		});
 		btnLeft.setBounds(24, 57, 61, 28);
 		btnLeft.setText("LEFT");
 		
 		Button btnRight = new Button(grpCaddyControl, SWT.NONE);
+		btnRight.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				sendCommand("k");
+			}
+		});
 		btnRight.setBounds(200, 57, 61, 28);
 		btnRight.setText("RIGHT");
-		grpCaddyControl.setTabList(new Control[]{btnUp, btnLeft, btnRight, btnDown, scale, btnSet});
+		grpCaddyControl.setTabList(new Control[]{btnUp, btnLeft, btnRight, btnDown, scale, btnCaddySet});
 		
 		Button btnStart = new Button(shell, SWT.NONE);
 		btnStart.setBounds(168, 493, 94, 28);
@@ -318,6 +397,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 	@Override
 	public void writeLog(int id, String text) {
 		// TODO Auto-generated method stub
+		System.out.println(text);
 		
 	}
 
@@ -336,9 +416,8 @@ public class DrawbotControlApplication implements net.Network_iface {
 	public void sendCommand(String cmd){		
 		try {
 			if (portName != null && portName != "") {
-					network.connect(portName, Integer.parseInt(portBaudRate)); //open the selected port
-					network.writeSerial(cmd); //Send to port		
-					network.disconnect(); //close the port
+					if (!network.isConnected()) network.connect(portName, Integer.parseInt(portBaudRate)); //open the selected port if not already open
+					network.writeSerial(cmd); //Send to port							
 				}
 			}
 		catch (Exception e)
