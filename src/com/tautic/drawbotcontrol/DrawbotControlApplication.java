@@ -207,7 +207,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		grpImageFileSettings.setForeground(SWTResourceManager.getColor(SWT.COLOR_TITLE_BACKGROUND));
 		grpImageFileSettings.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		grpImageFileSettings.setText("Image File Settings");
-		grpImageFileSettings.setBounds(10, 68, 348, 254);
+		grpImageFileSettings.setBounds(10, 407, 348, 254);
 		
 		Label lblCharsPerPage = new Label(grpImageFileSettings, SWT.NONE);
 		lblCharsPerPage.setBounds(20, 224, 87, 18);
@@ -297,7 +297,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		grpTrimStepper.setForeground(SWTResourceManager.getColor(SWT.COLOR_TITLE_BACKGROUND));
 		grpTrimStepper.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		grpTrimStepper.setText("Trim");
-		grpTrimStepper.setBounds(8, 328, 348, 333);
+		grpTrimStepper.setBounds(10, 68, 348, 333);
 		
 		TabFolder tabFolder_1 = new TabFolder(grpTrimStepper, SWT.NONE);
 		tabFolder_1.setBounds(10, 24, 328, 299);
@@ -468,14 +468,32 @@ public class DrawbotControlApplication implements net.Network_iface {
 		btnRight.setText("RIGHT");
 		
 		Button btnStart = new Button(shell, SWT.NONE);
+		btnStart.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				sendCommand("p");
+			}
+		});
 		btnStart.setBounds(376, 267, 68, 28);
 		btnStart.setText("Start");
 		
 		Button btnPause = new Button(shell, SWT.NONE);
+		btnPause.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				sendCommand("p");
+			}
+		});
 		btnPause.setBounds(450, 267, 68, 28);
 		btnPause.setText("Pause");
 		
 		Button btnResume = new Button(shell, SWT.NONE);
+		btnResume.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				sendCommand("a");
+			}
+		});
 		btnResume.setBounds(524, 267, 68, 28);
 		btnResume.setText("Resume");
 		
@@ -493,6 +511,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		lblPages.setText("Pages:");
 		
 		textPages = new Text(shell, SWT.BORDER);
+		textPages.setEnabled(false);
 		textPages.setBounds(518, 631, 64, 19);
 		textPages.setText("128");
 		
