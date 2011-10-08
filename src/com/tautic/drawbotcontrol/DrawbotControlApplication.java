@@ -14,6 +14,8 @@
  */
 package com.tautic.drawbotcontrol;
 
+
+
 import net.Network;
 
 import org.eclipse.swt.widgets.Display;
@@ -45,6 +47,7 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Composite;
+
 
 public class DrawbotControlApplication implements net.Network_iface {
 
@@ -121,10 +124,26 @@ public class DrawbotControlApplication implements net.Network_iface {
 				//Open Drawing menu item
 				FileDialog fd = new FileDialog(shell, SWT.OPEN);
 				fd.setText("Open Drawing File");
-				String[] filterExtensions = {"*.dbi"};
+				String[] filterExtensions = {"*.dbi", "*.*"};
 				fd.setFilterExtensions(filterExtensions);
 				fileName = fd.open();
 				System.out.println(fileName);
+				
+				OpenDrawing(fileName);
+				
+			}
+
+			private void OpenDrawing(String fileName) {
+				// TODO Auto-generated method stub
+				Charset charset = Charset.forName("UTF-8");
+				try (BufferedReader reader = Files.newBufferedReader(file, charset)) {
+				    String line = null;
+				    while ((line = reader.readLine()) != null) {
+				        System.out.println(line);
+				    }
+				} catch (IOException x) {
+				        System.err.format("IOException: %s%n", x);
+				}
 				
 			}
 		});
