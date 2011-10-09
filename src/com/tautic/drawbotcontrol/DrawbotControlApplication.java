@@ -15,9 +15,6 @@
 package com.tautic.drawbotcontrol;
 
 
-
-import net.Network;
-
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Menu;
@@ -38,14 +35,11 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Composite;
 
 
@@ -134,16 +128,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 			}
 
 			private void OpenDrawing(String fileName) {
-				// TODO Auto-generated method stub
-				Charset charset = Charset.forName("UTF-8");
-				try (BufferedReader reader = Files.newBufferedReader(file, charset)) {
-				    String line = null;
-				    while ((line = reader.readLine()) != null) {
-				        System.out.println(line);
-				    }
-				} catch (IOException x) {
-				        System.err.format("IOException: %s%n", x);
-				}
+				
 				
 			}
 		});
