@@ -14,6 +14,8 @@
  */
 package com.tautic.drawbotcontrol;
 
+
+
 import net.Network;
 
 import org.eclipse.swt.widgets.Display;
@@ -29,13 +31,29 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
 import gnu.io.*;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.widgets.Composite;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+
+>>>>>>> parent of b199333... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
+>>>>>>> parent of 77136fb... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
 
 public class DrawbotControlApplication implements net.Network_iface {
 
@@ -44,8 +62,11 @@ public class DrawbotControlApplication implements net.Network_iface {
 	private Text textCharsPerPage;
 	private String portName;
 	private String portBaudRate = "9600";
+	private String fileName; //Name of the opened drawing file
 	static SerialPort serialPort;
 	private static net.Network network;
+	private Text text_1;
+	private Text textPaperHeight;
 
 	
 	/**
@@ -56,7 +77,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		try {
 			DrawbotControlApplication window = new DrawbotControlApplication();
 			network = new net.Network(0, new DrawbotControlApplication(), 255);
-			window.open();
+			window.open();		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -70,10 +91,17 @@ public class DrawbotControlApplication implements net.Network_iface {
 		createContents();
 		shell.open();
 		shell.layout();
+		shell.addListener(SWT.Dispose, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				if (network.isConnected()) network.disconnect(); //If our port is open, close it.	
+			}
+		});
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
 			}
+			
 		}
 	}
 
@@ -82,7 +110,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 	 */
 	protected void createContents() {
 		shell = new Shell();
-		shell.setSize(612, 590);
+		shell.setSize(623, 729);
 		shell.setText("Drawbot Control - v2.0");
 		shell.setLayout(null);
 		
@@ -94,6 +122,63 @@ public class DrawbotControlApplication implements net.Network_iface {
 		
 		Menu menu_1 = new Menu(mntmFile);
 		mntmFile.setMenu(menu_1);
+		
+		MenuItem mntmopenDrawing = new MenuItem(menu_1, SWT.NONE);
+		mntmopenDrawing.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				//Open Drawing menu item
+				FileDialog fd = new FileDialog(shell, SWT.OPEN);
+				fd.setText("Open Drawing File");
+<<<<<<< HEAD
+				String[] filterExtensions = {"*.dbi"};
+=======
+<<<<<<< HEAD
+				String[] filterExtensions = {"*.dbi"};
+=======
+				String[] filterExtensions = {"*.dbi", "*.*"};
+>>>>>>> parent of b199333... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
+>>>>>>> parent of 77136fb... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
+				fd.setFilterExtensions(filterExtensions);
+				fileName = fd.open();
+				System.out.println(fileName);
+				
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+				OpenDrawing(fileName);
+				
+			}
+
+			private void OpenDrawing(String fileName) {
+				// TODO Auto-generated method stub
+				Charset charset = Charset.forName("UTF-8");
+				try (BufferedReader reader = Files.newBufferedReader(file, charset)) {
+				    String line = null;
+				    while ((line = reader.readLine()) != null) {
+				        System.out.println(line);
+				    }
+				} catch (IOException x) {
+				        System.err.format("IOException: %s%n", x);
+				}
+				
+>>>>>>> parent of b199333... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
+>>>>>>> parent of 77136fb... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
+			}
+		});
+		mntmopenDrawing.setText("&Open Drawing");
+		
+		new MenuItem(menu_1, SWT.SEPARATOR);
+		
+		MenuItem mntmExit = new MenuItem(menu_1, SWT.NONE);
+		mntmExit.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				shell.dispose(); // exit the application
+			}
+		});
+		mntmExit.setText("E&xit");
 		
 		MenuItem mntmTools = new MenuItem(menu, SWT.CASCADE);
 		mntmTools.setText("T&ools");
@@ -129,6 +214,11 @@ public class DrawbotControlApplication implements net.Network_iface {
 		MenuItem baud115200 = new MenuItem(menu_4, SWT.CHECK);
 		baud115200.setText("115200");
 		
+		new MenuItem(menu_2, SWT.SEPARATOR);
+		
+		MenuItem mntmClearMemory = new MenuItem(menu_2, SWT.NONE);
+		mntmClearMemory.setText("Clear Memory");
+		
 		Canvas canvas = new Canvas(shell, SWT.NONE);
 		canvas.setBackground(SWTResourceManager.getColor(SWT.COLOR_DARK_GRAY));
 		canvas.setBounds(382, 27, 200, 200);
@@ -137,7 +227,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		grpSerialPortSelect.setForeground(SWTResourceManager.getColor(SWT.COLOR_TITLE_BACKGROUND));
 		grpSerialPortSelect.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		grpSerialPortSelect.setText("Serial Port Select");
-		grpSerialPortSelect.setBounds(10, 10, 348, 77);
+		grpSerialPortSelect.setBounds(10, 10, 348, 52);
 		
 		final Combo comboPorts = new Combo(grpSerialPortSelect, SWT.NONE);
 		comboPorts.addSelectionListener(new SelectionAdapter() {
@@ -156,232 +246,366 @@ public class DrawbotControlApplication implements net.Network_iface {
 		grpImageFileSettings.setForeground(SWTResourceManager.getColor(SWT.COLOR_TITLE_BACKGROUND));
 		grpImageFileSettings.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		grpImageFileSettings.setText("Image File Settings");
-		grpImageFileSettings.setBounds(10, 126, 348, 110);
-		
-		textPages = new Text(grpImageFileSettings, SWT.BORDER);
-		textPages.setText("128");
-		textPages.setBounds(116, 21, 64, 19);
-		
-		textCharsPerPage = new Text(grpImageFileSettings, SWT.BORDER);
-		textCharsPerPage.setText("128");
-		textCharsPerPage.setBounds(116, 50, 64, 19);
-		
-		Label lblPages = new Label(grpImageFileSettings, SWT.NONE);
-		lblPages.setBounds(10, 24, 59, 14);
-		lblPages.setText("Pages:");
+		grpImageFileSettings.setBounds(10, 68, 348, 254);
 		
 		Label lblCharsPerPage = new Label(grpImageFileSettings, SWT.NONE);
-		lblCharsPerPage.setBounds(10, 53, 96, 14);
-		lblCharsPerPage.setText("Chars Per Page:");
+		lblCharsPerPage.setBounds(20, 224, 87, 18);
+		lblCharsPerPage.setText("Bytes Per Page:");
+		
+		textCharsPerPage = new Text(grpImageFileSettings, SWT.BORDER);
+		textCharsPerPage.setBounds(113, 221, 64, 19);
+		textCharsPerPage.setText("128");
+		
+		Label lblPenType = new Label(grpImageFileSettings, SWT.NONE);
+		lblPenType.setBounds(20, 191, 55, 15);
+		lblPenType.setText("Pen Type:");
+		
+		Spinner spinnerPenType = new Spinner(grpImageFileSettings, SWT.BORDER);
+		spinnerPenType.setEnabled(false);
+		spinnerPenType.setBounds(111, 184, 47, 22);
+		
+		Label lblDrawingDelay1 = new Label(grpImageFileSettings, SWT.NONE);
+		lblDrawingDelay1.setBounds(20, 146, 88, 14);
+		lblDrawingDelay1.setText("Drawing Delay:");
+		
+		Scale scaleDrawingDelay = new Scale(grpImageFileSettings, SWT.NONE);
+		scaleDrawingDelay.setEnabled(false);
+		scaleDrawingDelay.setBounds(113, 135, 192, 42);
+		scaleDrawingDelay.setMaximum(127);
+		scaleDrawingDelay.setMinimum(1);
+		scaleDrawingDelay.setSelection(64);
+		
+		Label lblDrawingDelay = new Label(grpImageFileSettings, SWT.NONE);
+		lblDrawingDelay.setEnabled(false);
+		lblDrawingDelay.setBounds(305, 144, 33, 19);
+		lblDrawingDelay.setText("64");
+		lblDrawingDelay.setFont(SWTResourceManager.getFont("Lucida Grande", 12, SWT.NORMAL));
+		
+		final Label lblDrawingSpeed = new Label(grpImageFileSettings, SWT.NONE);
+		lblDrawingSpeed.setBounds(305, 96, 33, 19);
+		lblDrawingSpeed.setFont(SWTResourceManager.getFont("Lucida Grande", 12, SWT.NORMAL));
+		lblDrawingSpeed.setText("64");
+		
+		final Scale scaleDrawingSpeed = new Scale(grpImageFileSettings, SWT.NONE);
+		scaleDrawingSpeed.setBounds(113, 87, 192, 42);
+		scaleDrawingSpeed.addMouseMoveListener(new MouseMoveListener() {						
+			@Override
+			public void mouseMove(MouseEvent arg0) {
+				lblDrawingSpeed.setText(Integer.toString(scaleDrawingSpeed.getSelection()));				
+			}
+		});
+		scaleDrawingSpeed.setMaximum(127);
+		scaleDrawingSpeed.setMinimum(1);
+		scaleDrawingSpeed.setSelection(64);
+		
+		Label lblCaddySpeed = new Label(grpImageFileSettings, SWT.NONE);
+		lblCaddySpeed.setBounds(20, 98, 88, 14);
+		lblCaddySpeed.setText("Drawing Speed:");
+		
+		Button btnCaddySet = new Button(grpImageFileSettings, SWT.NONE);
+		btnCaddySet.setBounds(277, 217, 61, 28);
+		btnCaddySet.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				String scaleAmount = String.valueOf((char)scaleDrawingSpeed.getSelection());
+				sendCommand("]" + scaleAmount);
+				System.out.println(scaleAmount);
+			}
+		});
+		btnCaddySet.setText("Set");
+		
+		Label lblPaperWidth = new Label(grpImageFileSettings, SWT.NONE);
+		lblPaperWidth.setText("Paper Width:");
+		lblPaperWidth.setBounds(20, 30, 87, 18);
+		
+		text_1 = new Text(grpImageFileSettings, SWT.BORDER);
+		text_1.setEnabled(false);
+		text_1.setText("18");
+		text_1.setBounds(113, 27, 64, 19);
+		
+		Label lblPaperHeight = new Label(grpImageFileSettings, SWT.NONE);
+		lblPaperHeight.setText("Paper Height:");
+		lblPaperHeight.setBounds(20, 57, 87, 18);
+		
+		textPaperHeight = new Text(grpImageFileSettings, SWT.BORDER);
+		textPaperHeight.setEnabled(false);
+		textPaperHeight.setText("24");
+		textPaperHeight.setBounds(113, 54, 64, 19);
 		
 		Group grpTrimStepper = new Group(shell, SWT.NONE);
 		grpTrimStepper.setForeground(SWTResourceManager.getColor(SWT.COLOR_TITLE_BACKGROUND));
 		grpTrimStepper.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		grpTrimStepper.setText("Trim");
-		grpTrimStepper.setBounds(10, 242, 293, 245);
+		grpTrimStepper.setBounds(8, 328, 348, 333);
 		
-		Label label = new Label(grpTrimStepper, SWT.SEPARATOR | SWT.HORIZONTAL);
-		label.setBounds(8, 120, 275, 2);
+		TabFolder tabFolder_1 = new TabFolder(grpTrimStepper, SWT.NONE);
+		tabFolder_1.setBounds(10, 24, 328, 299);
+<<<<<<< HEAD
 		
-		Label lblLeftStepper = new Label(grpTrimStepper, SWT.NONE);
+		TabItem tbtmSteppersTab = new TabItem(tabFolder_1, SWT.NONE);
+		tbtmSteppersTab.setText("Steppers");
+		
+=======
+<<<<<<< HEAD
+		
+		TabItem tbtmSteppersTab = new TabItem(tabFolder_1, SWT.NONE);
+		tbtmSteppersTab.setText("Steppers");
+		
+		Composite composite_2 = new Composite(tabFolder_1, SWT.NONE);
+		composite_2.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
+		tbtmSteppersTab.setControl(composite_2);
+		
+=======
+		
+		TabItem tbtmSteppersTab = new TabItem(tabFolder_1, SWT.NONE);
+		tbtmSteppersTab.setText("Steppers");
+		
+>>>>>>> parent of 77136fb... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
+		Composite composite_2 = new Composite(tabFolder_1, SWT.NONE);
+		composite_2.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
+		tbtmSteppersTab.setControl(composite_2);
+		
+<<<<<<< HEAD
+=======
+>>>>>>> parent of b199333... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
+>>>>>>> parent of 77136fb... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
+		Label lblLeftStepper = new Label(composite_2, SWT.NONE);
+		lblLeftStepper.setBounds(76, 15, 190, 14);
 		lblLeftStepper.setAlignment(SWT.CENTER);
-		lblLeftStepper.setBounds(67, 16, 190, 14);
 		lblLeftStepper.setText("Left Stepper");
 		
-		Button btnLeftUpFine = new Button(grpTrimStepper, SWT.NONE);
+		Label lblFine = new Label(composite_2, SWT.NONE);
+		lblFine.setBounds(9, 60, 58, 14);
+		lblFine.setText("Fine:");
+		
+		Button btnLeftUpFine = new Button(composite_2, SWT.NONE);
+		btnLeftUpFine.setBounds(76, 43, 94, 28);
 		btnLeftUpFine.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {				
 				sendCommand("a"); //Up Left Fine
 			}
 		});
-		btnLeftUpFine.setBounds(67, 36, 94, 28);
 		btnLeftUpFine.setText("UP");
 		
-		Button btnLeftDownFine = new Button(grpTrimStepper, SWT.NONE);
-		btnLeftDownFine.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				sendCommand("s");
-			}
-		});
-		btnLeftDownFine.setBounds(167, 36, 94, 28);
-		btnLeftDownFine.setText("DOWN");
-		
-		Label lblFine = new Label(grpTrimStepper, SWT.NONE);
-		lblFine.setText("Fine:");
-		lblFine.setBounds(10, 53, 108, 14);
-		
-		Label lblCoarse = new Label(grpTrimStepper, SWT.NONE);
-		lblCoarse.setText("Coarse:");
-		lblCoarse.setBounds(12, 156, 47, 14);
-		
-		Label label_1 = new Label(grpTrimStepper, SWT.NONE);
-		label_1.setBounds(70, 125, 190, 14);
-		label_1.setText("Left Stepper");
-		label_1.setAlignment(SWT.CENTER);
-		
-		Label label_2 = new Label(grpTrimStepper, SWT.NONE);
-		label_2.setBounds(69, 205, 190, 14);
-		label_2.setText("Right Stepper");
-		label_2.setAlignment(SWT.CENTER);
-		
-		Button btnLeftUpCoarse = new Button(grpTrimStepper, SWT.NONE);
-		btnLeftUpCoarse.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				sendCommand("q");
-			}
-		});
-		btnLeftUpCoarse.setBounds(70, 144, 94, 28);
-		btnLeftUpCoarse.setText("UP");
-		
-		Button btnLeftDownCoarse = new Button(grpTrimStepper, SWT.NONE);
-		btnLeftDownCoarse.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				sendCommand("w");
-			}
-		});
-		btnLeftDownCoarse.setBounds(170, 144, 94, 28);
-		btnLeftDownCoarse.setText("DOWN");
-		
-		Button btnRightUpCoarse = new Button(grpTrimStepper, SWT.NONE);
-		btnRightUpCoarse.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				sendCommand("e");
-			}
-		});
-		btnRightUpCoarse.setBounds(70, 175, 94, 28);
-		btnRightUpCoarse.setText("UP");
-		
-		Button btnRightDownCoarse = new Button(grpTrimStepper, SWT.NONE);
-		btnRightDownCoarse.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				sendCommand("r");
-			}
-		});
-		btnRightDownCoarse.setBounds(170, 175, 94, 28);
-		btnRightDownCoarse.setText("DOWN");
-		
-		Button btnRightUpFine = new Button(grpTrimStepper, SWT.NONE);
+		Button btnRightUpFine = new Button(composite_2, SWT.NONE);
+		btnRightUpFine.setBounds(76, 75, 94, 28);
 		btnRightUpFine.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				sendCommand("d");
 			}
 		});
-		btnRightUpFine.setBounds(67, 68, 94, 28);
 		btnRightUpFine.setText("UP");
-				
-		Button btnRightDownFine = new Button(grpTrimStepper, SWT.NONE);
+		
+		Button btnLeftDownFine = new Button(composite_2, SWT.NONE);
+		btnLeftDownFine.setBounds(176, 43, 94, 28);
+		btnLeftDownFine.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				sendCommand("s");
+			}
+		});
+		btnLeftDownFine.setText("DOWN");
+		
+		Button btnRightDownFine = new Button(composite_2, SWT.NONE);
+		btnRightDownFine.setBounds(176, 75, 94, 28);
 		btnRightDownFine.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				sendCommand("f");
 			}
 		});
-		btnRightDownFine.setBounds(167, 68, 94, 28);
 		btnRightDownFine.setText("DOWN");
 		
-		Label lblRightStepper = new Label(grpTrimStepper, SWT.NONE);
-		lblRightStepper.setBounds(69, 101, 190, 14);
+		Label lblRightStepper = new Label(composite_2, SWT.NONE);
+		lblRightStepper.setBounds(77, 117, 190, 14);
 		lblRightStepper.setText("Right Stepper");
 		lblRightStepper.setAlignment(SWT.CENTER);
+<<<<<<< HEAD
 		
-		Group grpCaddyControl = new Group(shell, SWT.NONE);
-		grpCaddyControl.setForeground(SWTResourceManager.getColor(SWT.COLOR_TITLE_BACKGROUND));
-		grpCaddyControl.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
-		grpCaddyControl.setText("Caddy Control");
-		grpCaddyControl.setBounds(309, 242, 293, 245);
+		Label label = new Label(composite_2, SWT.SEPARATOR | SWT.HORIZONTAL);
+		label.setBounds(0, 136, 330, 2);
 		
-		final Label lblSpeed = new Label(grpCaddyControl, SWT.NONE);
-		lblSpeed.setBounds(184, 164, 33, 19);
-		lblSpeed.setFont(SWTResourceManager.getFont("Lucida Grande", 16, SWT.NORMAL));
-		lblSpeed.setText("64");
+=======
 		
-		final Scale scale = new Scale(grpCaddyControl, SWT.NONE);
-		scale.setBounds(8, 153, 170, 42);
-		scale.addMouseMoveListener(new MouseMoveListener() {						
-			@Override
-			public void mouseMove(MouseEvent arg0) {
-				lblSpeed.setText(Integer.toString(scale.getSelection()));				
-			}
-		});
-		scale.setMaximum(127);
-		scale.setMinimum(1);
-		scale.setSelection(64);
+		Label label = new Label(composite_2, SWT.SEPARATOR | SWT.HORIZONTAL);
+		label.setBounds(0, 136, 330, 2);
 		
-		Button btnCaddySet = new Button(grpCaddyControl, SWT.NONE);
-		btnCaddySet.addSelectionListener(new SelectionAdapter() {
+>>>>>>> parent of 77136fb... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
+		Label label_1 = new Label(composite_2, SWT.NONE);
+		label_1.setBounds(75, 141, 190, 14);
+		label_1.setText("Left Stepper");
+		label_1.setAlignment(SWT.CENTER);
+		
+		Label lblCoarse = new Label(composite_2, SWT.NONE);
+		lblCoarse.setBounds(10, 179, 47, 14);
+		lblCoarse.setText("Coarse:");
+		
+		Button btnLeftUpCoarse = new Button(composite_2, SWT.NONE);
+		btnLeftUpCoarse.setBounds(75, 167, 94, 28);
+		btnLeftUpCoarse.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				String scaleAmount = String.valueOf((char)scale.getSelection());
-				sendCommand("]" + scaleAmount);
-				System.out.println(scaleAmount);
+				sendCommand("q");
 			}
 		});
-		btnCaddySet.setBounds(216, 158, 61, 28);
-		btnCaddySet.setText("Set");
+		btnLeftUpCoarse.setText("UP");
 		
-		Label lblCaddySpeed = new Label(grpCaddyControl, SWT.NONE);
-		lblCaddySpeed.setBounds(59, 122, 78, 14);
-		lblCaddySpeed.setText("Caddy Speed");
+		Button btnRightUpCoarse = new Button(composite_2, SWT.NONE);
+		btnRightUpCoarse.setBounds(75, 198, 94, 28);
+		btnRightUpCoarse.addSelectionListener(new SelectionAdapter() {
+<<<<<<< HEAD
+=======
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				sendCommand("e");
+			}
+		});
+		btnRightUpCoarse.setText("UP");
 		
-		Button btnUp = new Button(grpCaddyControl, SWT.NONE);
+		Button btnLeftDownCoarse = new Button(composite_2, SWT.NONE);
+		btnLeftDownCoarse.setBounds(175, 167, 94, 28);
+		btnLeftDownCoarse.addSelectionListener(new SelectionAdapter() {
+>>>>>>> parent of 77136fb... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				sendCommand("w");
+			}
+		});
+<<<<<<< HEAD
+		btnRightUpCoarse.setText("UP");
+		
+		Button btnLeftDownCoarse = new Button(composite_2, SWT.NONE);
+		btnLeftDownCoarse.setBounds(175, 167, 94, 28);
+		btnLeftDownCoarse.addSelectionListener(new SelectionAdapter() {
+=======
+		btnLeftDownCoarse.setText("DOWN");
+		
+		Button btnRightDownCoarse = new Button(composite_2, SWT.NONE);
+		btnRightDownCoarse.setBounds(175, 198, 94, 28);
+		btnRightDownCoarse.addSelectionListener(new SelectionAdapter() {
+>>>>>>> parent of 77136fb... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				sendCommand("w");
+			}
+		});
+<<<<<<< HEAD
+		btnLeftDownCoarse.setText("DOWN");
+		
+		Button btnRightDownCoarse = new Button(composite_2, SWT.NONE);
+		btnRightDownCoarse.setBounds(175, 198, 94, 28);
+		btnRightDownCoarse.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				sendCommand("r");
+			}
+		});
+		btnRightDownCoarse.setText("DOWN");
+=======
+		btnRightDownCoarse.setText("DOWN");
+<<<<<<< HEAD
+		
+		Label label_2 = new Label(composite_2, SWT.NONE);
+		label_2.setBounds(74, 238, 190, 14);
+		label_2.setText("Right Stepper");
+		label_2.setAlignment(SWT.CENTER);
+		
+		TabItem tbtmCaddyTab = new TabItem(tabFolder_1, SWT.NONE);
+		tbtmCaddyTab.setText("Caddy");
+		
+		Composite composite_3 = new Composite(tabFolder_1, SWT.NONE);
+		composite_3.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
+		tbtmCaddyTab.setControl(composite_3);
+		
+=======
+>>>>>>> parent of 77136fb... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
+		
+		Label label_2 = new Label(composite_2, SWT.NONE);
+		label_2.setBounds(74, 238, 190, 14);
+		label_2.setText("Right Stepper");
+		label_2.setAlignment(SWT.CENTER);
+		
+		TabItem tbtmCaddyTab = new TabItem(tabFolder_1, SWT.NONE);
+		tbtmCaddyTab.setText("Caddy");
+		
+		Composite composite_3 = new Composite(tabFolder_1, SWT.NONE);
+		composite_3.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
+		tbtmCaddyTab.setControl(composite_3);
+		
+<<<<<<< HEAD
+=======
+>>>>>>> parent of b199333... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
+>>>>>>> parent of 77136fb... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
+		Button btnUp = new Button(composite_3, SWT.NONE);
+		btnUp.setBounds(130, 85, 61, 28);
 		btnUp.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				sendCommand("g");
 			}
 		});
-		btnUp.setBounds(113, 32, 61, 28);
 		btnUp.setText("UP");
 		
-		Button btnDown = new Button(grpCaddyControl, SWT.NONE);
-		btnDown.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				sendCommand("h");
-			}
-		});
-		btnDown.setBounds(113, 82, 61, 28);
-		btnDown.setText("DOWN");
-		
-		Button btnLeft = new Button(grpCaddyControl, SWT.NONE);
+		Button btnLeft = new Button(composite_3, SWT.NONE);
+		btnLeft.setBounds(44, 120, 61, 28);
 		btnLeft.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				sendCommand("j");
 			}
 		});
-		btnLeft.setBounds(24, 57, 61, 28);
 		btnLeft.setText("LEFT");
 		
-		Button btnRight = new Button(grpCaddyControl, SWT.NONE);
+		Button btnDown = new Button(composite_3, SWT.NONE);
+		btnDown.setBounds(130, 154, 61, 28);
+		btnDown.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				sendCommand("h");
+			}
+		});
+		btnDown.setText("DOWN");
+		
+		Button btnRight = new Button(composite_3, SWT.NONE);
+		btnRight.setBounds(211, 120, 61, 28);
 		btnRight.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				sendCommand("k");
 			}
 		});
-		btnRight.setBounds(200, 57, 61, 28);
 		btnRight.setText("RIGHT");
-		grpCaddyControl.setTabList(new Control[]{btnUp, btnLeft, btnRight, btnDown, scale, btnCaddySet});
 		
 		Button btnStart = new Button(shell, SWT.NONE);
-		btnStart.setBounds(168, 493, 94, 28);
+		btnStart.setBounds(376, 267, 68, 28);
 		btnStart.setText("Start");
 		
 		Button btnPause = new Button(shell, SWT.NONE);
-		btnPause.setBounds(263, 493, 94, 28);
+		btnPause.setBounds(450, 267, 68, 28);
 		btnPause.setText("Pause");
 		
 		Button btnResume = new Button(shell, SWT.NONE);
-		btnResume.setBounds(359, 493, 94, 28);
+		btnResume.setBounds(524, 267, 68, 28);
 		btnResume.setText("Resume");
+		
+		Button btnUpload = new Button(shell, SWT.NONE);
+		btnUpload.setBounds(407, 233, 75, 25);
+		btnUpload.setText("Upload");
+		
+		Button btnDownload = new Button(shell, SWT.NONE);
+		btnDownload.setEnabled(false);
+		btnDownload.setBounds(488, 233, 75, 25);
+		btnDownload.setText("Download");
+		
+		Label lblPages = new Label(shell, SWT.NONE);
+		lblPages.setBounds(435, 634, 59, 14);
+		lblPages.setText("Pages:");
+		
+		textPages = new Text(shell, SWT.BORDER);
+		textPages.setBounds(518, 631, 64, 19);
+		textPages.setText("128");
 		
 		//Get available ports on system
 		@SuppressWarnings("unchecked")
