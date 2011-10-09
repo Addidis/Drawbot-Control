@@ -14,8 +14,6 @@
  */
 package com.tautic.drawbotcontrol;
 
-
-
 import net.Network;
 
 import org.eclipse.swt.widgets.Display;
@@ -47,13 +45,6 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Composite;
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-
->>>>>>> parent of b199333... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
->>>>>>> parent of 77136fb... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
 
 public class DrawbotControlApplication implements net.Network_iface {
 
@@ -130,41 +121,11 @@ public class DrawbotControlApplication implements net.Network_iface {
 				//Open Drawing menu item
 				FileDialog fd = new FileDialog(shell, SWT.OPEN);
 				fd.setText("Open Drawing File");
-<<<<<<< HEAD
 				String[] filterExtensions = {"*.dbi"};
-=======
-<<<<<<< HEAD
-				String[] filterExtensions = {"*.dbi"};
-=======
-				String[] filterExtensions = {"*.dbi", "*.*"};
->>>>>>> parent of b199333... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
->>>>>>> parent of 77136fb... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
 				fd.setFilterExtensions(filterExtensions);
 				fileName = fd.open();
 				System.out.println(fileName);
 				
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-				OpenDrawing(fileName);
-				
-			}
-
-			private void OpenDrawing(String fileName) {
-				// TODO Auto-generated method stub
-				Charset charset = Charset.forName("UTF-8");
-				try (BufferedReader reader = Files.newBufferedReader(file, charset)) {
-				    String line = null;
-				    while ((line = reader.readLine()) != null) {
-				        System.out.println(line);
-				    }
-				} catch (IOException x) {
-				        System.err.format("IOException: %s%n", x);
-				}
-				
->>>>>>> parent of b199333... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
->>>>>>> parent of 77136fb... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
 			}
 		});
 		mntmopenDrawing.setText("&Open Drawing");
@@ -340,13 +301,6 @@ public class DrawbotControlApplication implements net.Network_iface {
 		
 		TabFolder tabFolder_1 = new TabFolder(grpTrimStepper, SWT.NONE);
 		tabFolder_1.setBounds(10, 24, 328, 299);
-<<<<<<< HEAD
-		
-		TabItem tbtmSteppersTab = new TabItem(tabFolder_1, SWT.NONE);
-		tbtmSteppersTab.setText("Steppers");
-		
-=======
-<<<<<<< HEAD
 		
 		TabItem tbtmSteppersTab = new TabItem(tabFolder_1, SWT.NONE);
 		tbtmSteppersTab.setText("Steppers");
@@ -355,20 +309,6 @@ public class DrawbotControlApplication implements net.Network_iface {
 		composite_2.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
 		tbtmSteppersTab.setControl(composite_2);
 		
-=======
-		
-		TabItem tbtmSteppersTab = new TabItem(tabFolder_1, SWT.NONE);
-		tbtmSteppersTab.setText("Steppers");
-		
->>>>>>> parent of 77136fb... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
-		Composite composite_2 = new Composite(tabFolder_1, SWT.NONE);
-		composite_2.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
-		tbtmSteppersTab.setControl(composite_2);
-		
-<<<<<<< HEAD
-=======
->>>>>>> parent of b199333... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
->>>>>>> parent of 77136fb... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
 		Label lblLeftStepper = new Label(composite_2, SWT.NONE);
 		lblLeftStepper.setBounds(76, 15, 190, 14);
 		lblLeftStepper.setAlignment(SWT.CENTER);
@@ -422,17 +362,10 @@ public class DrawbotControlApplication implements net.Network_iface {
 		lblRightStepper.setBounds(77, 117, 190, 14);
 		lblRightStepper.setText("Right Stepper");
 		lblRightStepper.setAlignment(SWT.CENTER);
-<<<<<<< HEAD
 		
 		Label label = new Label(composite_2, SWT.SEPARATOR | SWT.HORIZONTAL);
 		label.setBounds(0, 136, 330, 2);
 		
-=======
-		
-		Label label = new Label(composite_2, SWT.SEPARATOR | SWT.HORIZONTAL);
-		label.setBounds(0, 136, 330, 2);
-		
->>>>>>> parent of 77136fb... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
 		Label label_1 = new Label(composite_2, SWT.NONE);
 		label_1.setBounds(75, 141, 190, 14);
 		label_1.setText("Left Stepper");
@@ -455,8 +388,6 @@ public class DrawbotControlApplication implements net.Network_iface {
 		Button btnRightUpCoarse = new Button(composite_2, SWT.NONE);
 		btnRightUpCoarse.setBounds(75, 198, 94, 28);
 		btnRightUpCoarse.addSelectionListener(new SelectionAdapter() {
-<<<<<<< HEAD
-=======
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				sendCommand("e");
@@ -467,31 +398,11 @@ public class DrawbotControlApplication implements net.Network_iface {
 		Button btnLeftDownCoarse = new Button(composite_2, SWT.NONE);
 		btnLeftDownCoarse.setBounds(175, 167, 94, 28);
 		btnLeftDownCoarse.addSelectionListener(new SelectionAdapter() {
->>>>>>> parent of 77136fb... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				sendCommand("w");
 			}
 		});
-<<<<<<< HEAD
-		btnRightUpCoarse.setText("UP");
-		
-		Button btnLeftDownCoarse = new Button(composite_2, SWT.NONE);
-		btnLeftDownCoarse.setBounds(175, 167, 94, 28);
-		btnLeftDownCoarse.addSelectionListener(new SelectionAdapter() {
-=======
-		btnLeftDownCoarse.setText("DOWN");
-		
-		Button btnRightDownCoarse = new Button(composite_2, SWT.NONE);
-		btnRightDownCoarse.setBounds(175, 198, 94, 28);
-		btnRightDownCoarse.addSelectionListener(new SelectionAdapter() {
->>>>>>> parent of 77136fb... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				sendCommand("w");
-			}
-		});
-<<<<<<< HEAD
 		btnLeftDownCoarse.setText("DOWN");
 		
 		Button btnRightDownCoarse = new Button(composite_2, SWT.NONE);
@@ -503,9 +414,6 @@ public class DrawbotControlApplication implements net.Network_iface {
 			}
 		});
 		btnRightDownCoarse.setText("DOWN");
-=======
-		btnRightDownCoarse.setText("DOWN");
-<<<<<<< HEAD
 		
 		Label label_2 = new Label(composite_2, SWT.NONE);
 		label_2.setBounds(74, 238, 190, 14);
@@ -519,25 +427,6 @@ public class DrawbotControlApplication implements net.Network_iface {
 		composite_3.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
 		tbtmCaddyTab.setControl(composite_3);
 		
-=======
->>>>>>> parent of 77136fb... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
-		
-		Label label_2 = new Label(composite_2, SWT.NONE);
-		label_2.setBounds(74, 238, 190, 14);
-		label_2.setText("Right Stepper");
-		label_2.setAlignment(SWT.CENTER);
-		
-		TabItem tbtmCaddyTab = new TabItem(tabFolder_1, SWT.NONE);
-		tbtmCaddyTab.setText("Caddy");
-		
-		Composite composite_3 = new Composite(tabFolder_1, SWT.NONE);
-		composite_3.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
-		tbtmCaddyTab.setControl(composite_3);
-		
-<<<<<<< HEAD
-=======
->>>>>>> parent of b199333... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
->>>>>>> parent of 77136fb... Revert 777fd81cd5aed0901275c58eba814f735b0156e0^..HEAD
 		Button btnUp = new Button(composite_3, SWT.NONE);
 		btnUp.setBounds(130, 85, 61, 28);
 		btnUp.addSelectionListener(new SelectionAdapter() {
