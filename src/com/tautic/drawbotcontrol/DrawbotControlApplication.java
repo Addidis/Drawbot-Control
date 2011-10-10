@@ -14,6 +14,10 @@
  */
 package com.tautic.drawbotcontrol;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import net.Network;
 
 import org.eclipse.swt.widgets.Display;
@@ -121,11 +125,11 @@ public class DrawbotControlApplication implements net.Network_iface {
 				//Open Drawing menu item
 				FileDialog fd = new FileDialog(shell, SWT.OPEN);
 				fd.setText("Open Drawing File");
-				String[] filterExtensions = {"*.dbi"};
+				String[] filterExtensions = {"*.dbi", "*.*"};
 				fd.setFilterExtensions(filterExtensions);
 				fileName = fd.open();
 				System.out.println(fileName);
-				
+				if( fileName != "" && fileName != null) openDrawing(fileName);
 			}
 		});
 		mntmopenDrawing.setText("&Open Drawing");
@@ -507,6 +511,26 @@ public class DrawbotControlApplication implements net.Network_iface {
 		
 	}
 
+	private void openDrawing(String fileName) {
+		// TODO Auto-generated method stub
+		try {
+			FileInputStream fis = new FileInputStream(fileName); //open the file
+			int b;
+			
+			while ((b = fis.read()) != -1) { //until EOF, read bytes in.
+				//drawBotImage[1] = b;
+				System.out.print((char)b);
+			}
+			fis.close(); //close the file
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+		}
+	}
+	
 	@Override
 	public void writeLog(int id, String text) {
 		// TODO Auto-generated method stub
