@@ -14,6 +14,7 @@
  */
 package com.tautic.drawbotcontrol;
 
+import java.awt.List;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -516,11 +517,58 @@ public class DrawbotControlApplication implements net.Network_iface {
 		try {
 			FileInputStream fis = new FileInputStream(fileName); //open the file
 			int b;
+			System.out.println(fis.available());
+			StringBuffer dbImage = new StringBuffer();
 			
-			while ((b = fis.read()) != -1) { //until EOF, read bytes in.
+			/*while ((b = fis.read()) != -1) { //until EOF, read bytes in.
+			// read header
+			
+			for (int i = 0; i < 16; i++) {
+				b = fis.read();
 				//drawBotImage[1] = b;
-				System.out.print((char)b);
+				dbImage.append((char)b);
+				System.out.print(b);
+				System.out.print(",");
+				//System.out.print((char)b);
 			}
+			*/
+			
+			//temp test code
+			/*
+			[0x44][0x42][0x49][Version]
+			[ColumnsMSB][ColumnsLSB]
+			[RowsMSB][RowsLSB]
+			[PaperWidthMSB][PaperWidthLSB]
+			[PaperHeightMSB][PaperHeightLSB]
+			[DrawingSpeed]
+			[DrawingDelay]
+			[Future][Future]
+			*/
+			DrawBotImage dbi = new DrawBotImage();
+			int cMSB = 0, cLSB = 0, rMSB = 0, rLSB = 0, pwMSB = 0, pwLSB = 0, phMSB = 0, phLSB = 0;
+			fis.read(); //d
+			fis.read(); //b
+			fis.read(); //i
+			dbi.version = (char)fis.read(); //version
+			cMSB = fis.read();
+			cLSB = fis.read();
+			rMSB = fis.read();
+			rLSB = fis.read();
+			pwMSB = fis.read();
+			pwLSB = fis.read();
+			phMSB = fis.read();
+			phLSB = fis.read();
+			dbi.drawingSpeed = (char)fis.read();
+			dbi.drawingDelay = (char)fis.read();
+			
+			dbi.setColumns((char)cMSB, (char)cLSB);
+			dbi.setRows((char)rMSB, (char)rLSB);
+			dbi.setPaperWidth((char)pwMSB, (char)pwLSB);
+			dbi.setPaperHeight((char)phMSB, (char)phLSB);
+			
+			System.out.println(String.valueOf(dbi.columns));
+			System.out.println();
+			System.out.print(dbImage.toString());
 			fis.close(); //close the file
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
