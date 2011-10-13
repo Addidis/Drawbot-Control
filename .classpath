@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="lib" path="lib/RXTXcomm.jar">
 		<attributes>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Drawbot-Control"/>
@@ -19,7 +20,5 @@
 	<classpathentry kind="var" path="ECLIPSE_PLUGINS/org.eclipse.text_3.5.101.r371_v20110810-0800.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_PLUGINS/org.eclipse.ui.forms_3.5.100.v20110425.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_PLUGINS/org.eclipse.ui.workbench_3.7.0.I20110519-0100.jar"/>
-	<classpathentry kind="lib" path="/Applications/eclipse/plugins/org.eclipse.swt.cocoa.macosx_3.7.1.v3738a.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

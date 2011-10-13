@@ -14,9 +14,7 @@
  */
 package com.tautic.drawbotcontrol;
 
-
-
-import net.Network;
+import java.util.ArrayList;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -36,19 +34,14 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Composite;
-
-
+import com.tautic.drawbotcontrol.DrawBotControl;
 public class DrawbotControlApplication implements net.Network_iface {
 
 	protected Shell shell;
@@ -61,6 +54,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 	private static net.Network network;
 	private Text text_1;
 	private Text textPaperHeight;
+	private static DrawBotImage dbi;
 
 	
 	/**
@@ -103,6 +97,26 @@ public class DrawbotControlApplication implements net.Network_iface {
 	 * Create contents of the window.
 	 */
 	protected void createContents() {
+		//TEMP TEST CODE
+		dbi = new DrawBotImage();
+		dbi.version = 1;
+		dbi.columns = 128;
+		dbi.rows = 128;
+		dbi.drawingDelay = 2;
+		dbi.drawingSpeed = 95;
+		dbi.paperHeight = 2300;
+		dbi.paperWidth = 1600;
+		ArrayList<Byte> b = new ArrayList<Byte>(); 
+		for (int i = 0; i < 128; i++)
+		{
+			for (int j = 0; j < 128; j++) {
+				b.add((byte)j);
+			}
+			
+		}
+		dbi.imageData = b;
+		//END TEST
+		
 		shell = new Shell();
 		shell.setSize(623, 729);
 		shell.setText("Drawbot Control - v2.0");
@@ -128,26 +142,28 @@ public class DrawbotControlApplication implements net.Network_iface {
 				fd.setFilterExtensions(filterExtensions);
 				fileName = fd.open();
 				System.out.println(fileName);
-				
-				OpenDrawing(fileName);
-				
-			}
-
-			private void OpenDrawing(String fileName) {
-				// TODO Auto-generated method stub
-				Charset charset = Charset.forName("UTF-8");
-				try (BufferedReader reader = Files.newBufferedReader(file, charset)) {
-				    String line = null;
-				    while ((line = reader.readLine()) != null) {
-				        System.out.println(line);
-				    }
-				} catch (IOException x) {
-				        System.err.format("IOException: %s%n", x);
-				}
-				
+				 
+				if( fileName != "" && fileName != null) dbi = DrawBotControl.openDrawing(fileName);
 			}
 		});
 		mntmopenDrawing.setText("&Open Drawing");
+		
+		MenuItem mntmSaveDrawing = new MenuItem(menu_1, SWT.NONE);
+		mntmSaveDrawing.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (dbi != null) {
+					FileDialog fd = new FileDialog(shell, SWT.SAVE);
+					fd.setText("Save Drawing File");
+					String[] filterExtensions = {"*.dbi"};
+					fd.setFilterExtensions(filterExtensions);
+					fileName = fd.open();
+					
+					if (fileName != "" && fileName != null) DrawBotControl.saveDrawing(fileName, dbi);
+				}
+			}
+		});
+		mntmSaveDrawing.setText("Save Drawing");
 		
 		new MenuItem(menu_1, SWT.SEPARATOR);
 		
@@ -197,6 +213,12 @@ public class DrawbotControlApplication implements net.Network_iface {
 		new MenuItem(menu_2, SWT.SEPARATOR);
 		
 		MenuItem mntmClearMemory = new MenuItem(menu_2, SWT.NONE);
+		mntmClearMemory.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				sendCommand("m");
+			}
+		});
 		mntmClearMemory.setText("Clear Memory");
 		
 		Canvas canvas = new Canvas(shell, SWT.NONE);
@@ -545,6 +567,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		
 	}
 
+	
 	@Override
 	public void writeLog(int id, String text) {
 		// TODO Auto-generated method stub
