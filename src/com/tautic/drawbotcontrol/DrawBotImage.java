@@ -1,6 +1,7 @@
 package com.tautic.drawbotcontrol;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class DrawBotImage implements Serializable {
 	private static final long serialVersionUID = -4263997665563097690L;
@@ -11,7 +12,7 @@ public class DrawBotImage implements Serializable {
 	public int paperHeight;
 	public char drawingSpeed;
 	public char drawingDelay; 
-	public char[][] imageData; //Contains image pixel data.
+	public ArrayList<Byte> imageData; //Contains image pixel data.
 	
 		public void setColumns(char MSB, char LSB) {
 			columns = MSB >> 8 | LSB;
