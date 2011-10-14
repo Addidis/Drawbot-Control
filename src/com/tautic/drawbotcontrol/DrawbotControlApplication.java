@@ -14,6 +14,7 @@
  */
 package com.tautic.drawbotcontrol;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
 import org.eclipse.swt.widgets.Display;
@@ -37,11 +38,14 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Composite;
 import com.tautic.drawbotcontrol.DrawBotControl;
+import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.events.PaintEvent;
 public class DrawbotControlApplication implements net.Network_iface {
 
 	protected Shell shell;
@@ -52,7 +56,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 	private String fileName; //Name of the opened drawing file
 	static SerialPort serialPort;
 	private static net.Network network;
-	private Text text_1;
+	private Text textPaperWidth;
 	private Text textPaperHeight;
 	private static DrawBotImage dbi;
 
@@ -96,134 +100,30 @@ public class DrawbotControlApplication implements net.Network_iface {
 	/**
 	 * Create contents of the window.
 	 */
-	protected void createContents() {
-		//TEMP TEST CODE
-		dbi = new DrawBotImage();
-		dbi.version = 1;
-		dbi.columns = 128;
-		dbi.rows = 128;
-		dbi.drawingDelay = 2;
-		dbi.drawingSpeed = 95;
-		dbi.paperHeight = 2300;
-		dbi.paperWidth = 1600;
-		ArrayList<Byte> b = new ArrayList<Byte>(); 
-		for (int i = 0; i < 128; i++)
-		{
-			for (int j = 0; j < 128; j++) {
-				b.add((byte)j);
-			}
-			
-		}
-		dbi.imageData = b;
-		//END TEST
-		
+	protected void createContents() {	
+				
 		shell = new Shell();
 		shell.setSize(623, 729);
 		shell.setText("Drawbot Control - v2.0");
-		shell.setLayout(null);
+		shell.setLayout(null);			
 		
-		Menu menu = new Menu(shell, SWT.BAR);
-		shell.setMenuBar(menu);
-		
-		MenuItem mntmFile = new MenuItem(menu, SWT.CASCADE);
-		mntmFile.setText("F&ile");
-		
-		Menu menu_1 = new Menu(mntmFile);
-		mntmFile.setMenu(menu_1);
-		
-		MenuItem mntmopenDrawing = new MenuItem(menu_1, SWT.NONE);
-		mntmopenDrawing.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				//Open Drawing menu item
-				FileDialog fd = new FileDialog(shell, SWT.OPEN);
-				fd.setText("Open Drawing File");
-				String[] filterExtensions = {"*.dbi", "*.*"};
-				fd.setFilterExtensions(filterExtensions);
-				fileName = fd.open();
-				System.out.println(fileName);
-				 
-				if( fileName != "" && fileName != null) dbi = DrawBotControl.openDrawing(fileName);
-			}
-		});
-		mntmopenDrawing.setText("&Open Drawing");
-		
-		MenuItem mntmSaveDrawing = new MenuItem(menu_1, SWT.NONE);
-		mntmSaveDrawing.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
+		final Canvas canvas = new Canvas(shell, SWT.NONE);
+		canvas.addPaintListener(new PaintListener() {
+			public void paintControl(PaintEvent e) {
 				if (dbi != null) {
-					FileDialog fd = new FileDialog(shell, SWT.SAVE);
-					fd.setText("Save Drawing File");
-					String[] filterExtensions = {"*.dbi"};
-					fd.setFilterExtensions(filterExtensions);
-					fileName = fd.open();
-					
-					if (fileName != "" && fileName != null) DrawBotControl.saveDrawing(fileName, dbi);
+					for (int x = 1; x < dbi.rows; x++) {
+						for (int y = 1; y < dbi.columns; y++) {
+							int b = 0x00;
+							b = dbi.imageData.get(x + (y * dbi.columns));
+							
+							if (b > 0) e.gc.drawPoint(x,y); //drawOval(x,y,b,b);	
+						}
+					}					
 				}
 			}
 		});
-		mntmSaveDrawing.setText("Save Drawing");
-		
-		new MenuItem(menu_1, SWT.SEPARATOR);
-		
-		MenuItem mntmExit = new MenuItem(menu_1, SWT.NONE);
-		mntmExit.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				shell.dispose(); // exit the application
-			}
-		});
-		mntmExit.setText("E&xit");
-		
-		MenuItem mntmTools = new MenuItem(menu, SWT.CASCADE);
-		mntmTools.setText("T&ools");
-		
-		Menu menu_2 = new Menu(mntmTools);
-		mntmTools.setMenu(menu_2);
-		
-		MenuItem mntmPort = new MenuItem(menu_2, SWT.CASCADE);
-		mntmPort.setText("Port");
-		
-		Menu menu_3 = new Menu(mntmPort);
-		mntmPort.setMenu(menu_3);
-		
-		MenuItem mntmBaudRate = new MenuItem(menu_2, SWT.CASCADE);
-		mntmBaudRate.setText("Baud Rate");
-		
-		Menu menu_4 = new Menu(mntmBaudRate);
-		mntmBaudRate.setMenu(menu_4);
-		
-		MenuItem baud9600 = new MenuItem(menu_4, SWT.CHECK);
-		baud9600.setSelection(true);
-		baud9600.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				portBaudRate = "9600";
-			}
-		});
-		baud9600.setText("9600");
-		
-		MenuItem baud38400 = new MenuItem(menu_4, SWT.CHECK);
-		baud38400.setText("38400");
-		
-		MenuItem baud115200 = new MenuItem(menu_4, SWT.CHECK);
-		baud115200.setText("115200");
-		
-		new MenuItem(menu_2, SWT.SEPARATOR);
-		
-		MenuItem mntmClearMemory = new MenuItem(menu_2, SWT.NONE);
-		mntmClearMemory.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				sendCommand("m");
-			}
-		});
-		mntmClearMemory.setText("Clear Memory");
-		
-		Canvas canvas = new Canvas(shell, SWT.NONE);
 		canvas.setBackground(SWTResourceManager.getColor(SWT.COLOR_DARK_GRAY));
-		canvas.setBounds(382, 27, 200, 200);
+		canvas.setBounds(382, 27, 200, 200);			
 		
 		Group grpSerialPortSelect = new Group(shell, SWT.NONE);
 		grpSerialPortSelect.setForeground(SWTResourceManager.getColor(SWT.COLOR_TITLE_BACKGROUND));
@@ -270,7 +170,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		lblDrawingDelay1.setBounds(20, 146, 88, 14);
 		lblDrawingDelay1.setText("Drawing Delay:");
 		
-		Scale scaleDrawingDelay = new Scale(grpImageFileSettings, SWT.NONE);
+		final Scale scaleDrawingDelay = new Scale(grpImageFileSettings, SWT.NONE);
 		scaleDrawingDelay.setEnabled(false);
 		scaleDrawingDelay.setBounds(113, 135, 192, 42);
 		scaleDrawingDelay.setMaximum(127);
@@ -320,10 +220,10 @@ public class DrawbotControlApplication implements net.Network_iface {
 		lblPaperWidth.setText("Paper Width:");
 		lblPaperWidth.setBounds(20, 30, 87, 18);
 		
-		text_1 = new Text(grpImageFileSettings, SWT.BORDER);
-		text_1.setEnabled(false);
-		text_1.setText("18");
-		text_1.setBounds(113, 27, 64, 19);
+		textPaperWidth = new Text(grpImageFileSettings, SWT.BORDER);
+		textPaperWidth.setEnabled(false);
+		textPaperWidth.setText("18");
+		textPaperWidth.setBounds(113, 27, 64, 19);
 		
 		Label lblPaperHeight = new Label(grpImageFileSettings, SWT.NONE);
 		lblPaperHeight.setText("Paper Height:");
@@ -555,6 +455,135 @@ public class DrawbotControlApplication implements net.Network_iface {
 		textPages.setEnabled(false);
 		textPages.setBounds(518, 631, 64, 19);
 		textPages.setText("128");
+		
+		Menu menu = new Menu(shell, SWT.BAR);
+		shell.setMenuBar(menu);
+		
+		MenuItem mntmFile = new MenuItem(menu, SWT.CASCADE);
+		mntmFile.setText("F&ile");
+		
+		Menu menu_1 = new Menu(mntmFile);
+		mntmFile.setMenu(menu_1);
+		
+		MenuItem mntmOpenImage = new MenuItem(menu_1, SWT.NONE);
+		mntmOpenImage.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				FileDialog fd = new FileDialog(shell, SWT.OPEN);
+				fd.setText("Open Drawing File");
+				String[] filterExtensions = {"*.jpg"};
+				fd.setFilterExtensions(filterExtensions);
+				fileName = fd.open();
+				System.out.println(fileName);
+				 
+				if( fileName != "" && fileName != null) 
+				{
+					dbi = new DrawBotImage();
+					dbi = ImageExport.ConvertToDBI(fileName);
+				}							
+				canvas.redraw(); //Refresh the canvas so it renders our preview image
+				}			
+		});
+		mntmOpenImage.setText("Open Image");
+		
+		new MenuItem(menu_1, SWT.SEPARATOR);
+		
+		MenuItem mntmopenDrawing = new MenuItem(menu_1, SWT.NONE);
+		mntmopenDrawing.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				//Open Drawing menu item
+				FileDialog fd = new FileDialog(shell, SWT.OPEN);
+				fd.setText("Open Drawing File");
+				String[] filterExtensions = {"*.dbi", "*.*"};
+				fd.setFilterExtensions(filterExtensions);
+				fileName = fd.open();
+				System.out.println(fileName);
+				 
+				if( fileName != "" && fileName != null) dbi = DrawBotControl.openDrawing(fileName);
+				
+				//Update controls with new values from loaded file
+				textPaperWidth.setText(String.valueOf(dbi.paperWidth));
+				textPaperHeight.setText(String.valueOf(dbi.paperHeight));
+				scaleDrawingDelay.setSelection(Integer.valueOf(dbi.drawingDelay));
+				
+				canvas.redraw();
+			}
+		});
+		mntmopenDrawing.setText("Open Drawing");
+		
+		MenuItem mntmSaveDrawing = new MenuItem(menu_1, SWT.NONE);
+		mntmSaveDrawing.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (dbi != null) {
+					FileDialog fd = new FileDialog(shell, SWT.SAVE);
+					fd.setText("Save Drawing File");
+					String[] filterExtensions = {"*.dbi"};
+					fd.setFilterExtensions(filterExtensions);
+					fileName = fd.open();
+					
+					if (fileName != "" && fileName != null) DrawBotControl.saveDrawing(fileName, dbi);
+				}
+			}
+		});
+		mntmSaveDrawing.setText("Save Drawing");
+		
+		new MenuItem(menu_1, SWT.SEPARATOR);
+		
+		MenuItem mntmExit = new MenuItem(menu_1, SWT.NONE);
+		mntmExit.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				shell.dispose(); // exit the application
+			}
+		});
+		mntmExit.setText("E&xit");
+		
+		MenuItem mntmTools = new MenuItem(menu, SWT.CASCADE);
+		mntmTools.setText("T&ools");
+		
+		Menu menu_2 = new Menu(mntmTools);
+		mntmTools.setMenu(menu_2);
+		
+		MenuItem mntmPort = new MenuItem(menu_2, SWT.CASCADE);
+		mntmPort.setText("Port");
+		
+		Menu menu_3 = new Menu(mntmPort);
+		mntmPort.setMenu(menu_3);
+		
+		MenuItem mntmBaudRate = new MenuItem(menu_2, SWT.CASCADE);
+		mntmBaudRate.setText("Baud Rate");
+		
+		Menu menu_4 = new Menu(mntmBaudRate);
+		mntmBaudRate.setMenu(menu_4);
+		
+		MenuItem baud9600 = new MenuItem(menu_4, SWT.CHECK);
+		baud9600.setSelection(true);
+		baud9600.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				portBaudRate = "9600";
+			}
+		});
+		baud9600.setText("9600");
+		
+		MenuItem baud38400 = new MenuItem(menu_4, SWT.CHECK);
+		baud38400.setText("38400");
+		
+		MenuItem baud115200 = new MenuItem(menu_4, SWT.CHECK);
+		baud115200.setText("115200");
+		
+		new MenuItem(menu_2, SWT.SEPARATOR);
+		
+		MenuItem mntmClearMemory = new MenuItem(menu_2, SWT.NONE);
+		mntmClearMemory.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				sendCommand("m");
+			}
+		});
+		mntmClearMemory.setText("Clear Memory");
 		
 		//Get available ports on system
 		@SuppressWarnings("unchecked")
