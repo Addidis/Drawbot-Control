@@ -14,8 +14,8 @@
  */
 package com.tautic.drawbotcontrol;
 
-import java.awt.Color;
-import java.util.ArrayList;
+
+import javax.imageio.ImageTypeSpecifier;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -38,7 +38,10 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -110,16 +113,45 @@ public class DrawbotControlApplication implements net.Network_iface {
 		final Canvas canvas = new Canvas(shell, SWT.NONE);
 		canvas.addPaintListener(new PaintListener() {
 			public void paintControl(PaintEvent e) {
+				//int[] palette = new int[]{SWT.COLOR_WHITE, SWT.COLOR_GRAY, SWT.COLOR_BLACK, SWT.COLOR_RED, SWT.COLOR_BLUE,
+				//		SWT.COLOR_GREEN, 1,2,3,4,5};
+				Device device = Display.getCurrent ();
+				Color c1 = new Color (device, 0, 0, 0);
+				Color c2 = new Color (device, 25,25,25);
+				Color c3 = new Color (device, 50, 50, 50);
+				Color c4 = new Color (device, 75, 75, 75);
+				Color c5 = new Color (device, 100, 100, 100);
+				Color c6 = new Color (device, 125, 125, 125);
+				Color c7 = new Color (device, 150, 150, 150);
+				Color c8 = new Color (device, 175, 175, 175);
+				Color c9 = new Color (device, 200, 200, 200);
+				Color c10 = new Color (device, 255, 255, 255);
+				Color[] palette = new Color[]{c1, c2, c3, c4, c5, c6, c7, c8, c9, c10};
+				
 				if (dbi != null) {
 					for (int x = 1; x < dbi.rows; x++) {
+						System.out.println();
 						for (int y = 1; y < dbi.columns; y++) {
 							int b = 0x00;
-							b = dbi.imageData.get(x + (y * dbi.columns));
-							
-							if (b > 0) e.gc.drawPoint(x,y); //drawOval(x,y,b,b);	
+							b = dbi.imageData[x + (y * dbi.columns)]; // dbi.imageData.get(x + (y * dbi.columns));
+							System.out.print(b);
+							e.gc.setForeground(palette[b]);//e.display.getSystemColor(palette[b]));
+							 
+							if (b > 0) e.gc.drawPoint(y,x); //drawOval(x,y,b,b);	
 						}
-					}					
+					}
 				}
+				c1.dispose();
+				c2.dispose();
+				c3.dispose();
+				c4.dispose();
+				c5.dispose();
+				c6.dispose();
+				c7.dispose();
+				c8.dispose();
+				c9.dispose();
+				c10.dispose();
+				//device.dispose();
 			}
 		});
 		canvas.setBackground(SWTResourceManager.getColor(SWT.COLOR_DARK_GRAY));

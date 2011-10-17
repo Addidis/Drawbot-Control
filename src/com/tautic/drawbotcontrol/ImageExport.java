@@ -30,12 +30,12 @@ public class ImageExport {
 		try{
 			BufferedImage img;
 			DrawBotImage dbi = new DrawBotImage();
-			ArrayList<Integer> imageData = new ArrayList<Integer>();
-
+			
 			dbi.version = 1; //File Version
 			img = ImageIO.read(new File( fileName ));
 			int w = img.getWidth();
 			int h = img.getHeight();
+			int[] imageData = new int[w*h];
 			System.out.print("W:"+w+"xH:"+h);
 			dbi.columns = w;
 			dbi.rows = h;
@@ -57,7 +57,9 @@ public class ImageExport {
 					int blue = (pixel) & 0xff;
 					int med = (red+green+blue) / 3;
 					int out = med / 26;
-   					imageData.add(out);		
+   					//imageData.add(out);
+					//x + (y * dbi.columns)
+					imageData[i + (j * w)] = out;
    					System.out.print(out);
 					}	 			
     			} 

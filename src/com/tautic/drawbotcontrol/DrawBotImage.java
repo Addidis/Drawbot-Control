@@ -12,7 +12,7 @@ public class DrawBotImage implements Serializable {
 	public int paperHeight;
 	public char drawingSpeed;
 	public char drawingDelay; 
-	public ArrayList<Integer> imageData; //Contains image pixel data.
+	public int[] imageData; //Contains image pixel data.
 	
 		public void setColumns(char MSB, char LSB) {
 			columns = MSB >> 8 | LSB;
