@@ -113,8 +113,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		final Canvas canvas = new Canvas(shell, SWT.NONE);
 		canvas.addPaintListener(new PaintListener() {
 			public void paintControl(PaintEvent e) {
-				//int[] palette = new int[]{SWT.COLOR_WHITE, SWT.COLOR_GRAY, SWT.COLOR_BLACK, SWT.COLOR_RED, SWT.COLOR_BLUE,
-				//		SWT.COLOR_GREEN, 1,2,3,4,5};
+				// set up the palette we'll be using for rendering previews. We're using a rough 10 color grayscale representation.
 				Device device = Display.getCurrent ();
 				Color c1 = new Color (device, 0, 0, 0);
 				Color c2 = new Color (device, 25,25,25);
@@ -127,20 +126,21 @@ public class DrawbotControlApplication implements net.Network_iface {
 				Color c9 = new Color (device, 200, 200, 200);
 				Color c10 = new Color (device, 255, 255, 255);
 				Color[] palette = new Color[]{c1, c2, c3, c4, c5, c6, c7, c8, c9, c10};
-				
+				//Drawing code to render preview
 				if (dbi != null) {
 					for (int x = 1; x < dbi.rows; x++) {
 						System.out.println();
 						for (int y = 1; y < dbi.columns; y++) {
 							int b = 0x00;
-							b = dbi.imageData[x + (y * dbi.columns)]; // dbi.imageData.get(x + (y * dbi.columns));
+							b = dbi.imageData[x + (y * dbi.columns)]; 
 							System.out.print(b);
-							e.gc.setForeground(palette[b]);//e.display.getSystemColor(palette[b]));
+							e.gc.setForeground(palette[b]); //Sets the foreground color based on the byte value.
 							 
-							if (b > 0) e.gc.drawPoint(y,x); //drawOval(x,y,b,b);	
+							if (b > 0) e.gc.drawPoint(y,x); 	
 						}
 					}
 				}
+				//Dispose of the color resources after use
 				c1.dispose();
 				c2.dispose();
 				c3.dispose();
@@ -151,7 +151,6 @@ public class DrawbotControlApplication implements net.Network_iface {
 				c8.dispose();
 				c9.dispose();
 				c10.dispose();
-				//device.dispose();
 			}
 		});
 		canvas.setBackground(SWTResourceManager.getColor(SWT.COLOR_DARK_GRAY));
@@ -161,7 +160,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		grpSerialPortSelect.setForeground(SWTResourceManager.getColor(SWT.COLOR_TITLE_BACKGROUND));
 		grpSerialPortSelect.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		grpSerialPortSelect.setText("Serial Port Select");
-		grpSerialPortSelect.setBounds(10, 10, 348, 52);
+		grpSerialPortSelect.setBounds(10, 10, 348, 57);
 		
 		final Combo comboPorts = new Combo(grpSerialPortSelect, SWT.NONE);
 		comboPorts.addSelectionListener(new SelectionAdapter() {
@@ -170,11 +169,11 @@ public class DrawbotControlApplication implements net.Network_iface {
 				portName = comboPorts.getText(); //set variable to selected port name.
 			}
 		});
-		comboPorts.setBounds(84, 18, 248, 22);
+		comboPorts.setBounds(86, 10, 248, 22);
 		
 		Label lblPort = new Label(grpSerialPortSelect, SWT.NONE);
 		lblPort.setText("Port:");
-		lblPort.setBounds(8, 22, 59, 14);
+		lblPort.setBounds(10, 14, 59, 14);
 		
 		Group grpImageFileSettings = new Group(shell, SWT.NONE);
 		grpImageFileSettings.setForeground(SWTResourceManager.getColor(SWT.COLOR_TITLE_BACKGROUND));
@@ -211,13 +210,13 @@ public class DrawbotControlApplication implements net.Network_iface {
 		
 		Label lblDrawingDelay = new Label(grpImageFileSettings, SWT.NONE);
 		lblDrawingDelay.setEnabled(false);
-		lblDrawingDelay.setBounds(305, 144, 33, 19);
+		lblDrawingDelay.setBounds(311, 146, 33, 19);
 		lblDrawingDelay.setText("64");
-		lblDrawingDelay.setFont(SWTResourceManager.getFont("Lucida Grande", 12, SWT.NORMAL));
+		lblDrawingDelay.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		
 		final Label lblDrawingSpeed = new Label(grpImageFileSettings, SWT.NONE);
-		lblDrawingSpeed.setBounds(305, 96, 33, 19);
-		lblDrawingSpeed.setFont(SWTResourceManager.getFont("Lucida Grande", 12, SWT.NORMAL));
+		lblDrawingSpeed.setBounds(311, 98, 33, 19);
+		lblDrawingSpeed.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		lblDrawingSpeed.setText("64");
 		
 		final Scale scaleDrawingSpeed = new Scale(grpImageFileSettings, SWT.NONE);
@@ -237,6 +236,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		lblCaddySpeed.setText("Drawing Speed:");
 		
 		Button btnCaddySet = new Button(grpImageFileSettings, SWT.NONE);
+		btnCaddySet.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		btnCaddySet.setBounds(277, 217, 61, 28);
 		btnCaddySet.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -292,6 +292,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		lblFine.setText("Fine:");
 		
 		Button btnLeftUpFine = new Button(composite_2, SWT.NONE);
+		btnLeftUpFine.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		btnLeftUpFine.setBounds(76, 43, 94, 28);
 		btnLeftUpFine.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -302,6 +303,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		btnLeftUpFine.setText("UP");
 		
 		Button btnRightUpFine = new Button(composite_2, SWT.NONE);
+		btnRightUpFine.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		btnRightUpFine.setBounds(76, 75, 94, 28);
 		btnRightUpFine.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -312,6 +314,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		btnRightUpFine.setText("UP");
 		
 		Button btnLeftDownFine = new Button(composite_2, SWT.NONE);
+		btnLeftDownFine.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		btnLeftDownFine.setBounds(176, 43, 94, 28);
 		btnLeftDownFine.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -322,6 +325,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		btnLeftDownFine.setText("DOWN");
 		
 		Button btnRightDownFine = new Button(composite_2, SWT.NONE);
+		btnRightDownFine.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		btnRightDownFine.setBounds(176, 75, 94, 28);
 		btnRightDownFine.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -349,6 +353,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		lblCoarse.setText("Coarse:");
 		
 		Button btnLeftUpCoarse = new Button(composite_2, SWT.NONE);
+		btnLeftUpCoarse.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		btnLeftUpCoarse.setBounds(75, 167, 94, 28);
 		btnLeftUpCoarse.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -359,6 +364,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		btnLeftUpCoarse.setText("UP");
 		
 		Button btnRightUpCoarse = new Button(composite_2, SWT.NONE);
+		btnRightUpCoarse.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		btnRightUpCoarse.setBounds(75, 198, 94, 28);
 		btnRightUpCoarse.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -369,6 +375,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		btnRightUpCoarse.setText("UP");
 		
 		Button btnLeftDownCoarse = new Button(composite_2, SWT.NONE);
+		btnLeftDownCoarse.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		btnLeftDownCoarse.setBounds(175, 167, 94, 28);
 		btnLeftDownCoarse.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -379,6 +386,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		btnLeftDownCoarse.setText("DOWN");
 		
 		Button btnRightDownCoarse = new Button(composite_2, SWT.NONE);
+		btnRightDownCoarse.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		btnRightDownCoarse.setBounds(175, 198, 94, 28);
 		btnRightDownCoarse.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -401,6 +409,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		tbtmCaddyTab.setControl(composite_3);
 		
 		Button btnUp = new Button(composite_3, SWT.NONE);
+		btnUp.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		btnUp.setBounds(130, 85, 61, 28);
 		btnUp.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -411,6 +420,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		btnUp.setText("UP");
 		
 		Button btnLeft = new Button(composite_3, SWT.NONE);
+		btnLeft.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		btnLeft.setBounds(44, 120, 61, 28);
 		btnLeft.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -421,6 +431,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		btnLeft.setText("LEFT");
 		
 		Button btnDown = new Button(composite_3, SWT.NONE);
+		btnDown.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		btnDown.setBounds(130, 154, 61, 28);
 		btnDown.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -431,6 +442,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		btnDown.setText("DOWN");
 		
 		Button btnRight = new Button(composite_3, SWT.NONE);
+		btnRight.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		btnRight.setBounds(211, 120, 61, 28);
 		btnRight.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -441,6 +453,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		btnRight.setText("RIGHT");
 		
 		Button btnStart = new Button(shell, SWT.NONE);
+		btnStart.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		btnStart.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -451,6 +464,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		btnStart.setText("Start");
 		
 		Button btnPause = new Button(shell, SWT.NONE);
+		btnPause.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		btnPause.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -461,6 +475,7 @@ public class DrawbotControlApplication implements net.Network_iface {
 		btnPause.setText("Pause");
 		
 		Button btnResume = new Button(shell, SWT.NONE);
+		btnResume.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		btnResume.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -471,12 +486,14 @@ public class DrawbotControlApplication implements net.Network_iface {
 		btnResume.setText("Resume");
 		
 		Button btnUpload = new Button(shell, SWT.NONE);
-		btnUpload.setBounds(407, 233, 75, 25);
+		btnUpload.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
+		btnUpload.setBounds(394, 234, 75, 25);
 		btnUpload.setText("Upload");
 		
 		Button btnDownload = new Button(shell, SWT.NONE);
+		btnDownload.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.NORMAL));
 		btnDownload.setEnabled(false);
-		btnDownload.setBounds(488, 233, 75, 25);
+		btnDownload.setBounds(475, 234, 94, 25);
 		btnDownload.setText("Download");
 		
 		Label lblPages = new Label(shell, SWT.NONE);
